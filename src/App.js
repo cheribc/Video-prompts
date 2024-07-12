@@ -1,81 +1,58 @@
-import React, { useState, useEffect } from 'react';
-
-// Prompt data
-const promptData = {
-  shotTypes: ['close-up', 'medium', 'wide', 'aerial', 'POV', 'over-the-shoulder', 'Dutch angle'],
-  cameraMovements: ['static', 'handheld', 'tracking', 'panning', 'dolly zoom', 'crane shot', 'steadicam'],
-  subjects: [
-    'person', 'animal', 'landscape', 'cityscape', 'object', 'vehicle', 'building',
-    'natural phenomenon', 'crowd', 'historical event', 'futuristic scene', 'abstract concept'
-  ],
-  actions: [
-    'walking', 'running', 'dancing', 'flying', 'floating', 'transforming', 'exploding',
-    'growing', 'shrinking', 'melting', 'freezing', 'time-lapsing', 'reverse motion'
-  ],
-  expressions: [
-    'joyful', 'contemplative', 'intense', 'surprised', 'angry', 'serene', 'confused',
-    'determined', 'afraid', 'excited', 'indifferent', 'mysterious'
-  ],
-  lighting: [
-    'soft diffused', 'harsh dramatic', 'warm golden hour', 'cool moonlight', 'neon', 'strobe',
-    'silhouette', 'high-key', 'low-key', 'practical lights', 'fire-lit', 'underwater'
-  ],
-  settings: [
-    'bustling city street', 'serene forest glade', 'cozy dimly lit cafe', 'vast desert',
-    'futuristic metropolis', 'ancient ruins', 'underwater reef', 'space station',
-    'post-apocalyptic wasteland', 'Victorian era parlor', 'neon-lit cyberpunk alley'
-  ],
-  moods: [
-    'mysterious', 'uplifting', 'tense', 'romantic', 'melancholic', 'energetic', 'eerie',
-    'nostalgic', 'chaotic', 'peaceful', 'surreal', 'dystopian'
-  ],
-  visualEffects: [
-    'slow motion', 'time-lapse', 'particle effects', 'holographic projections', 'glitch effects',
-    'color shifting', 'double exposure', 'light trails', 'morphing', 'dream-like distortions'
-  ],
-  genres: [
-    'sci-fi', 'fantasy', 'horror', 'romance', 'action', 'documentary', 'film noir',
-    'western', 'musical', 'historical drama', 'psychological thriller', 'magical realism'
-  ]
-};
+import React, { useState, useEffect, useCallback } from 'react';
+import { promptDataLibrary } from './promptDataLibrary';
 
 const PromptGenerator = () => {
   const [prompt, setPrompt] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('general');
 
-  const generateRandomPrompt = () => {
+  const generateRandomPrompt = useCallback(() => {
     const getRandomItem = (array) => array[Math.floor(Math.random() * array.length)];
     
     let newPrompt = '';
-    if (selectedCategory === 'general' || selectedCategory === 'human') {
-      newPrompt = `A ${getRandomItem(promptData.shotTypes)} ${getRandomItem(promptData.cameraMovements)} shot of a ${getRandomItem(promptData.subjects)} ${getRandomItem(promptData.actions)}. `;
-      if (selectedCategory === 'human') {
-        newPrompt += `Their expression is ${getRandomItem(promptData.expressions)}. `;
-      }
-      newPrompt += `The scene is lit with ${getRandomItem(promptData.lighting)} light. Set in ${getRandomItem(promptData.settings)}. `;
-      newPrompt += `The mood is ${getRandomItem(promptData.moods)}. `;
-      newPrompt += `Visual style: ${getRandomItem(promptData.visualEffects)}. Genre: ${getRandomItem(promptData.genres)}.`;
-    } else if (selectedCategory === 'landscape') {
-      newPrompt = `A ${getRandomItem(promptData.shotTypes)} ${getRandomItem(promptData.cameraMovements)} shot of a ${getRandomItem(promptData.settings)}. `;
-      newPrompt += `The scene is lit with ${getRandomItem(promptData.lighting)} light. `;
-      newPrompt += `The mood is ${getRandomItem(promptData.moods)}. `;
-      newPrompt += `Visual style: ${getRandomItem(promptData.visualEffects)}. Genre: ${getRandomItem(promptData.genres)}.`;
-    } else if (selectedCategory === 'action') {
-      newPrompt = `A ${getRandomItem(promptData.shotTypes)} ${getRandomItem(promptData.cameraMovements)} shot of a ${getRandomItem(promptData.subjects)} ${getRandomItem(promptData.actions)}. `;
-      newPrompt += `Set in ${getRandomItem(promptData.settings)}. `;
-      newPrompt += `The scene is lit with ${getRandomItem(promptData.lighting)} light. `;
-      newPrompt += `The mood is ${getRandomItem(promptData.moods)}. `;
-      newPrompt += `Visual style: ${getRandomItem(promptData.visualEffects)}. Genre: ${getRandomItem(promptData.genres)}.`;
+    switch (selectedCategory) {
+      case 'general':
+        newPrompt = `A ${getRandomItem(promptDataLibrary.shotTypes)} ${getRandomItem(promptDataLibrary.cameraMovements)} shot of a ${getRandomItem(promptDataLibrary.subjects)} ${getRandomItem(promptDataLibrary.actions)}. `;
+        newPrompt += `The scene is lit with ${getRandomItem(promptDataLibrary.lighting)} light. Set in ${getRandomItem(promptDataLibrary.settings)}. `;
+        newPrompt += `The mood is ${getRandomItem(promptDataLibrary.moods)}. `;
+        newPrompt += `Visual style: ${getRandomItem(promptDataLibrary.visualEffects)}. Genre: ${getRandomItem(promptDataLibrary.genres)}.`;
+        break;
+      case 'human':
+        newPrompt = `A ${getRandomItem(promptDataLibrary.shotTypes)} ${getRandomItem(promptDataLibrary.cameraMovements)} shot of a person ${getRandomItem(promptDataLibrary.actions)}. `;
+        newPrompt += `Their expression is ${getRandomItem(promptDataLibrary.expressions)}. `;
+        newPrompt += `The scene is lit with ${getRandomItem(promptDataLibrary.lighting)} light. Set in ${getRandomItem(promptDataLibrary.settings)}. `;
+        newPrompt += `The mood is ${getRandomItem(promptDataLibrary.moods)}. `;
+        break;
+      case 'landscape':
+        newPrompt = `A ${getRandomItem(promptDataLibrary.shotTypes)} ${getRandomItem(promptDataLibrary.cameraMovements)} shot of a ${getRandomItem(promptDataLibrary.settings)}. `;
+        newPrompt += `The scene is lit with ${getRandomItem(promptDataLibrary.lighting)} light. `;
+        newPrompt += `The mood is ${getRandomItem(promptDataLibrary.moods)}. `;
+        newPrompt += `Visual style: ${getRandomItem(promptDataLibrary.visualEffects)}.`;
+        break;
+      case 'action':
+        newPrompt = `A ${getRandomItem(promptDataLibrary.shotTypes)} ${getRandomItem(promptDataLibrary.cameraMovements)} shot of a ${getRandomItem(promptDataLibrary.subjects)} ${getRandomItem(promptDataLibrary.actions)}. `;
+        newPrompt += `Set in ${getRandomItem(promptDataLibrary.settings)}. `;
+        newPrompt += `The scene is lit with ${getRandomItem(promptDataLibrary.lighting)} light. `;
+        newPrompt += `Visual style: ${getRandomItem(promptDataLibrary.visualEffects)}. Genre: ${getRandomItem(promptDataLibrary.genres)}.`;
+        break;
+      case 'abstract':
+        newPrompt = `A ${getRandomItem(promptDataLibrary.shotTypes)} of an abstract ${getRandomItem(promptDataLibrary.subjects)}. `;
+        newPrompt += `Visual style: ${getRandomItem(promptDataLibrary.visualEffects)}. `;
+        newPrompt += `The mood is ${getRandomItem(promptDataLibrary.moods)}. `;
+        newPrompt += `Lit with ${getRandomItem(promptDataLibrary.lighting)} light.`;
+        break;
+      default:
+        newPrompt = 'Please select a valid category.';
+        break;
     }
     
     setPrompt(newPrompt);
     setShowAlert(newPrompt.length > 500);
-  };
+  }, [selectedCategory]);
 
   useEffect(() => {
     generateRandomPrompt();
-  }, [selectedCategory]);
+  }, [selectedCategory, generateRandomPrompt]);
 
   return (
     <div style={{ padding: '1rem', maxWidth: '600px', margin: '0 auto' }}>
@@ -93,6 +70,7 @@ const PromptGenerator = () => {
           <option value="human">Human-focused</option>
           <option value="landscape">Landscape</option>
           <option value="action">Action</option>
+          <option value="abstract">Abstract</option>
         </select>
       </div>
 
@@ -149,4 +127,3 @@ function App() {
 }
 
 export default App;
-
